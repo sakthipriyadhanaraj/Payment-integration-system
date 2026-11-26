@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: payments
+      MYSQL_USER: payments
+      MYSQL_PASSWORD: local-payments
+      MYSQL_ROOT_PASSWORD: local-root
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - payments-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7
+    ports:
+      - "127.0.0.1:6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  payments-db:
